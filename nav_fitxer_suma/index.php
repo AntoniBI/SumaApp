@@ -1711,6 +1711,100 @@ if (isset($_GET['settings']) && !FM_READONLY) {
     exit;
 }
 
+if (isset($_GET['users']) && !FM_READONLY) {
+    fm_show_header(); // HEADER
+    fm_show_nav_path(FM_PATH); // current path
+    global $cfg, $lang, $lang_list;
+?>
+
+    <div class="col-md-8 offset-md-2 pt-3">
+        <div class="card mb-2" data-bs-theme="<?php echo FM_THEME; ?>">
+            <h6 class="card-header d-flex justify-content-between">
+                <span><i class="fa fa-cog"></i> <?php echo lng('Settings') ?></span>
+                <a href="?p=<?php echo FM_PATH ?>" class="text-danger"><i class="fa fa-times-circle-o"></i> <?php echo lng('Cancel') ?></a>
+            </h6>
+            <div class="card-body">
+                <form id="js-settings-form" action="" method="post" data-type="ajax" onsubmit="return save_settings(this)">
+                    <input type="hidden" name="type" value="settings" aria-label="hidden" aria-hidden="true">
+                    <div class="form-group row">
+                        <label for="js-language" class="col-sm-3 col-form-label"><?php echo lng('Language') ?></label>
+                        <div class="col-sm-5">
+                            <select class="form-select" id="js-language" name="js-language">
+                                <?php
+                                function getSelected($l)
+                                {
+                                    global $lang;
+                                    return ($lang == $l) ? 'selected' : '';
+                                }
+                                foreach ($lang_list as $k => $v) {
+                                    echo "<option value='$k' " . getSelected($k) . ">$v</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mt-3 mb-3 row ">
+                        <label for="js-error-report" class="col-sm-3 col-form-label"><?php echo lng('ErrorReporting') ?></label>
+                        <div class="col-sm-9">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="js-error-report" name="js-error-report" value="true" <?php echo $report_errors ? 'checked' : ''; ?> />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label for="js-show-hidden" class="col-sm-3 col-form-label"><?php echo lng('ShowHiddenFiles') ?></label>
+                        <div class="col-sm-9">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="js-show-hidden" name="js-show-hidden" value="true" <?php echo $show_hidden_files ? 'checked' : ''; ?> />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label for="js-hide-cols" class="col-sm-3 col-form-label"><?php echo lng('HideColumns') ?></label>
+                        <div class="col-sm-9">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="js-hide-cols" name="js-hide-cols" value="true" <?php echo $hide_Cols ? 'checked' : ''; ?> />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label for="js-3-1" class="col-sm-3 col-form-label"><?php echo lng('Theme') ?></label>
+                        <div class="col-sm-5">
+                            <select class="form-select w-100 text-capitalize" id="js-3-0" name="js-theme-3">
+                                <option value='light' <?php if ($theme == "light") {
+                                                            echo "selected";
+                                                        } ?>>
+                                    <?php echo lng('light') ?>
+                                </option>
+                                <option value='dark' <?php if ($theme == "dark") {
+                                                            echo "selected";
+                                                        } ?>>
+                                    <?php echo lng('dark') ?>
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <div class="col-sm-10">
+                            <button type="submit" class="btn btn-success"> <i class="fa fa-check-circle"></i> <?php echo lng('Save'); ?></button>
+                        </div>
+                    </div>
+
+                    <small class="text-body-secondary">* <?php echo lng('Sometimes the save action may not work on the first try, so please attempt it again') ?>.</small>
+                </form>
+            </div>
+        </div>
+    </div>
+<?php
+    fm_show_footer();
+    exit;
+}
+
+
 if (isset($_GET['help'])) {
     fm_show_header(); // HEADER
     fm_show_nav_path(FM_PATH); // current path
