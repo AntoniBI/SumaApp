@@ -1,2 +1,2 @@
-# PapeleriaSuma
+# SumaApp
 
