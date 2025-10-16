@@ -679,6 +679,9 @@
         "Actions": "Acciones",
         "Upload": "Subir",
         "Cancel": "Cancelar",
+        "Principal": "Instrumento Principal",
+        "Secondary": "Instrumento Secundario",
+        "Administrator": "Administrador",
         "InvertSelection": "Invertir Selección",
         "DestinationFolder": "Carpeta Destino",
         "ItemType": "Tipo de Ítem",
@@ -725,6 +728,10 @@
         "Delete": "Borrar",
         "Rename": "Canviar Nom",
         "CopyTo": "Copiar a",
+        "Principal": "Instrument Principal",
+        "Secondary": "Instrument Secundari",
+        "Create User": "Crear Usuari",
+        "Administrator": "Administrador",
         "DirectLink": "Enllaç Directe",
         "UploadingFiles": "Pujar Arxius",
         "ChangePermissions": "Canviar Permisos",
@@ -753,6 +760,10 @@
         "Change": "Canviar",
         "Settings": "Preferències",
         "Users": "Gestió d'Usuaris",
+        "LastName": "Cognoms",
+        "FecAlta": "Data d'alta",
+        "FecAct": "Última actualització",
+        "Register User": "Registrar-se",
         "Language": "Idioma",
         "MemoryUsed": "Memòria usada",
         "PartitionSize": "Mida de la partició",
@@ -776,7 +787,8 @@
         "Generate new password hash": "Crear una nou hash de contrasenya",
         "You are logged in": "Estàs autenticat",
         "Login failed. Invalid username or password": "Error d'inici de sessió. El nom d'usuari o contrasenya són incorrectes",
-        "password_hash not supported, Upgrade PHP version": "no és compatible el password_hash. Actualitza la versió de PHP"
+        "password_hash not supported, Upgrade PHP version": "no és compatible el password_hash. Actualitza la versió de PHP",
+        "Sometimes the save action may not work on the first try, so please attempt it again": "Algunes vegades no es guarda al primer intent. Per favor, torna a intentar-ho"
 	  }
 	},
     {

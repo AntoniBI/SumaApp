@@ -381,6 +381,8 @@ if ($use_auth) {
         // Form
         unset($_SESSION[FM_SESSION_ID]['logged']);
         fm_show_header_login();
+
+        if(!isset($_GET['register'])) {
 ?>
         <section class="h-100">
             <div class="container h-100">
@@ -424,12 +426,16 @@ if ($use_auth) {
                                             <?php echo lng('Login'); ?>
                                         </button>
                                     </div>
+                                    <div class="mb-3 text-center">
+                                        <a id="register_user" class="w-100 mt-4" href="index.php?p=&register=0"> 
+                                            <?php echo lng('Register User'); ?>
+                                        </a>
+                                    </div>
                                 </form>
                             </div>
                         </div>
-                        <div class="footer text-center">
-                            &mdash;&mdash; &copy;
-                            <a href="https://www.societatuniomusicalalberic.com/" target="_blank" class="text-decoration-none text-muted" data-version="<?php echo VERSION; ?>">Societat Unió Musical Alberic</a> &mdash;&mdash;
+                        <div class="card footer text-center" style="height:25px;background-color:#198754;color:#fff">
+                            <a href="https://www.societatuniomusicalalberic.com/" target="_blank" class="text-decoration-none" style="color:#fff" data-version="<?php echo VERSION; ?>">&mdash;&mdash; &copy; Societat Unió Musical Alberic  &mdash;&mdash;</a>
                         </div>
                     </div>
                 </div>
@@ -437,6 +443,103 @@ if ($use_auth) {
         </section>
 
     <?php
+
+        } else { 
+            
+            $query_inst = "SELECT id_instrumento, instrumento from instrumentos";
+            $res_inst = mysqli_query($conn,$query_inst);
+    ?>
+
+        <section class="h-100">
+            <div class="container h-100">
+                <div class="row justify-content-md-center align-content-center h-100vh">
+                    <div class="card-wrapper">
+                        <div class="card fat" data-bs-theme="<?php echo FM_THEME; ?>">
+                            <div class="card-body">
+                                <form id="js-users-form" action="" method="post" data-type="ajax" onsubmit="return save_user(this)">
+                                    <div class="mb-3">
+                                        <div class="brand">
+											<img src="images/icons/suma.png" width="672">
+                                        </div>
+                                        <div class="text-center">
+                                            <h1 class="card-title"><?php echo APP_TITLE; ?></h1>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="mb-3">
+                                        <label for="js-usuario" class="pb-2"><?php echo lng('Username'); ?></label>
+                                        <input type="text" class="form-control" id="js-usuario" name="js-usuario" required autofocus>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="js-password" class="pb-2"><?php echo lng('Password'); ?></label>
+                                        <input type="password" class="form-control" id="js-password" name="js-password" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="js-nombre" class="pb-2"><?php echo lng('Name'); ?></label>
+                                        <input type="text" class="form-control" id="js-nombre" name="js-nombre" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="js-apellidos" class="pb-2"><?php echo lng('LastName'); ?></label>
+                                        <input type="text" class="form-control" id="js-apellidos" name="js-apellidos" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="js-iprincipal" class="pb-2"><?php echo lng('Principal') ?></label>
+                                        <select class="form-select" id="js-iprincipal" name="js-iprincipal">
+                                        <?php
+                                            echo "<option value='null' " . ($user['principal'] == '' ? 'selected' : '') . " ></option>";
+                                            while ($inst = mysqli_fetch_array($res_inst,MYSQLI_ASSOC)) {
+                                                echo "<option value='". $inst['id_instrumento'] ."' " . ($user['principal'] == $inst['instrumento'] ? 'selected' : '') . " >". $inst['instrumento'] ."</option>";
+                                            }
+                                        ?>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="js-isecondary" class="pb-2"><?php echo lng('Secondary') ?></label>
+                                        <select class="form-select" id="js-isecondary" name="js-isecondary">
+                                        <?php
+                                            $res_inst = mysqli_query($conn,$query_inst);
+                                            echo "<option value='null' " . ($user['secondary'] == '' ? 'selected' : '') . " ></option>";
+                                            while ($inst = mysqli_fetch_array($res_inst,MYSQLI_ASSOC)) {
+                                                echo "<option value='". $inst['id_instrumento'] ."' " . ($user['secondary'] == $inst['instrumento'] ? 'selected' : '') . " >". $inst['instrumento'] ."</option>";
+                                            }
+                                        ?>
+                                        </select>
+                                    </div>                                    
+
+
+
+                                    <div class="mb-3">
+                                        <?php fm_show_message(); ?>
+                                    </div>
+                                    <input type="hidden" name="token" value="<?php echo htmlentities($_SESSION['token']); ?>" />
+                                    <div class="mb-3">
+                                        <button type="submit" class="btn btn-success btn-block w-100 mt-4" role="button">
+                                            <?php echo lng('Register User'); ?>
+                                        </button>
+                                    </div>
+                                    <div class="mb-3 text-center">
+                                        <a id="register_user" class="w-100 mt-4" href="index.php?p="> 
+                                            <?php echo lng('Login'); ?>
+                                        </a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card footer text-center" style="height:25px;background-color:#198754;color:#fff">
+                            <a href="https://www.societatuniomusicalalberic.com/" target="_blank" class="text-decoration-none" style="color:#fff" data-version="<?php echo VERSION; ?>">&mdash;&mdash; &copy; Societat Unió Musical Alberic  &mdash;&mdash;</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <?php }
+
         fm_show_footer_login();
         exit;
     }
@@ -1715,87 +1818,204 @@ if (isset($_GET['users']) && !FM_READONLY) {
     fm_show_header(); // HEADER
     fm_show_nav_path(FM_PATH); // current path
     global $cfg, $lang, $lang_list;
+
+    $query_inst = "SELECT id_instrumento, instrumento from instrumentos";
+    $res_inst = mysqli_query($conn,$query_inst);
+
+    $query_user = 
+        "SELECT u.id_usuario
+            ,u.usuario
+            ,u.nombre
+            ,u.apellidos
+            ,u.password
+            ,u.id_instrumento_p as id_principal
+            ,ipri.instrumento as principal
+            ,u.id_instrumento_s as id_secundario
+            ,isec.instrumento as secundario
+            ,u.administrador
+            ,u.fecha_alta
+            ,u.fecha_act
+        FROM usuarios u
+        LEFT OUTER JOIN instrumentos ipri ON (ipri.id_instrumento = u.id_instrumento_p)
+        LEFT OUTER JOIN instrumentos isec ON (isec.id_instrumento = u.id_instrumento_s)
+        WHERE u.id_usuario = ". $_GET['users'];
+    $res_user = mysqli_query($conn,$query_user);
+
+    if(mysqli_num_rows($res_user) > 0) {
+        $user = mysqli_fetch_array($res_user,MYSQLI_ASSOC);
+    }
+
+    $query=
+        "SELECT id_usuario
+            ,Nombre
+            ,apellidos
+        FROM usuarios u ";
+    
+    $result = mysqli_query($conn,$query);
 ?>
 
-    <div class="col-md-8 offset-md-2 pt-3">
+<script type="text/javascript">
+    function verUsuarios(idUsuario) {
+        document.location = 'index.php?p=&users='+ idUsuario;
+    }
+
+    function crearUsuario() {
+        document.location = 'index.php?p=&users=0';
+    }
+
+    function registrarUsuario() {
+        document.location = 'index.php?p=&register=0';
+    }
+
+
+    function mostrarPassword(){
+		var cambio = document.getElementById("js-password");
+		if(cambio.type == "password"){
+			cambio.type = "text";
+			$('.icon').removeClass('fa fa-eye-slash').addClass('fa fa-eye');
+		}else{
+			cambio.type = "password";
+			$('.icon').removeClass('fa fa-eye').addClass('fa fa-eye-slash');
+		}
+	} 
+    /*
+	$(document).ready(function () {
+	//CheckBox mostrar contraseña
+	    $('#ShowPassword').click(function () {
+		    $('#Password').attr('type', $(this).is(':checked') ? 'text' : 'password');
+	    });
+    });
+*/
+</script>
+
+
+    <div class="col-md-10 offset-md-1 pt-3">
         <div class="card mb-2" data-bs-theme="<?php echo FM_THEME; ?>">
             <h6 class="card-header d-flex justify-content-between">
-                <span><i class="fa fa-cog"></i> <?php echo lng('Settings') ?></span>
+                <span><i class="fa fa-user"></i> <?php echo lng('Users') ?></span>
                 <a href="?p=<?php echo FM_PATH ?>" class="text-danger"><i class="fa fa-times-circle-o"></i> <?php echo lng('Cancel') ?></a>
             </h6>
             <div class="card-body">
-                <form id="js-settings-form" action="" method="post" data-type="ajax" onsubmit="return save_settings(this)">
-                    <input type="hidden" name="type" value="settings" aria-label="hidden" aria-hidden="true">
-                    <div class="form-group row">
-                        <label for="js-language" class="col-sm-3 col-form-label"><?php echo lng('Language') ?></label>
-                        <div class="col-sm-5">
-                            <select class="form-select" id="js-language" name="js-language">
-                                <?php
-                                function getSelected($l)
-                                {
-                                    global $lang;
-                                    return ($lang == $l) ? 'selected' : '';
-                                }
-                                foreach ($lang_list as $k => $v) {
-                                    echo "<option value='$k' " . getSelected($k) . ">$v</option>";
-                                }
-                                ?>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="mt-3 mb-3 row ">
-                        <label for="js-error-report" class="col-sm-3 col-form-label"><?php echo lng('ErrorReporting') ?></label>
-                        <div class="col-sm-9">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" role="switch" id="js-error-report" name="js-error-report" value="true" <?php echo $report_errors ? 'checked' : ''; ?> />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mb-3 row">
-                        <label for="js-show-hidden" class="col-sm-3 col-form-label"><?php echo lng('ShowHiddenFiles') ?></label>
-                        <div class="col-sm-9">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" role="switch" id="js-show-hidden" name="js-show-hidden" value="true" <?php echo $show_hidden_files ? 'checked' : ''; ?> />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mb-3 row">
-                        <label for="js-hide-cols" class="col-sm-3 col-form-label"><?php echo lng('HideColumns') ?></label>
-                        <div class="col-sm-9">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" role="switch" id="js-hide-cols" name="js-hide-cols" value="true" <?php echo $hide_Cols ? 'checked' : ''; ?> />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mb-3 row">
-                        <label for="js-3-1" class="col-sm-3 col-form-label"><?php echo lng('Theme') ?></label>
-                        <div class="col-sm-5">
-                            <select class="form-select w-100 text-capitalize" id="js-3-0" name="js-theme-3">
-                                <option value='light' <?php if ($theme == "light") {
-                                                            echo "selected";
-                                                        } ?>>
-                                    <?php echo lng('light') ?>
-                                </option>
-                                <option value='dark' <?php if ($theme == "dark") {
-                                                            echo "selected";
-                                                        } ?>>
-                                    <?php echo lng('dark') ?>
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="mb-3 row">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-5">
+                        <table class="table table-bordered table-hover table-sm table-striped" data-bs-theme="<?php echo FM_THEME; ?>">
+                            <thead>
+                                <tr>
+                                    <th><?php echo lng('Name') ?></th>
+                                    <th><?php echo lng('LastName') ?></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php while ($fila = mysqli_fetch_array($result,MYSQLI_ASSOC)) { ?>
+                                    <tr onclick="verUsuarios('<?php echo $fila['id_usuario'] ?>')">
+                                      <td> <?php echo $fila['Nombre']; ?> </td>
+                                      <td> <?php echo $fila['apellidos']; ?> </td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
                         <div class="col-sm-10">
-                            <button type="submit" class="btn btn-success"> <i class="fa fa-check-circle"></i> <?php echo lng('Save'); ?></button>
+                            <button id="create_user" class="btn btn-success" type="button" onclick="crearUsuario()"> 
+                                <i class="fa fa-plus"></i> <?php echo lng('Create User'); ?>
+                            </button>
                         </div>
                     </div>
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-6">
+                        <form id="js-users-form" action="" method="post" data-type="ajax" onsubmit="return save_user(this)">
+                            <input type="hidden" name="type" value="users" aria-label="hidden" aria-hidden="true">
+                            <div class="form-group row">
+                               <label for="js-idusuario" class="col-sm-3 col-form-label" style="color:#198754;font-weight:bold"><?php echo lng('ID') ?></label>
+                               <div class="col-sm-6">
+                                    <input class="form-control" type="text" id="js-idusuario" name="js-idusuario" value="<?php echo str_pad($user['id_usuario'],5,'0',STR_PAD_LEFT) ?>" readonly>
+                                </div>
+                            </div>
+                            <div class="mt-3 mb-3 row">
+                                <label for="js-usuario" class="col-sm-3 col-form-label" style="color:#198754;font-weight:bold"><?php echo lng('Username') ?></label>
+                               <div class="col-sm-6">
+                                    <input class="form-control" type="text" id="js-usuario" name="js-usuario" value="<?php echo $user['usuario'] ?>" />
+                                </div>
+                            </div>
+                            <div class="mt-3 mb-3 row">
+                                <label for="js-nombre" class="col-sm-3 col-form-label" style="color:#198754;font-weight:bold"><?php echo lng('Name') ?></label>
+                               <div class="col-sm-6">
+                                    <input class="form-control" type="text" id="js-nombre" name="js-nombre" value="<?php echo $user['nombre'] ?>" />
+                                </div>
+                            </div>
+                            <div class="mt-3 mb-3 row">
+                                <label for="js-apellidos" class="col-sm-3 col-form-label" style="color:#198754;font-weight:bold"><?php echo lng('LastName') ?></label>
+                               <div class="col-sm-6">
+                                    <input class="form-control" type="text" id="js-apellidos" name="js-apellidos" value="<?php echo $user['apellidos'] ?>" />
+                                </div>
+                            </div>
+                            <?php if($_GET['users'] == 0) { ?>
+                                <div class="mt-3 mb-3 row">
+                                <label for="js-password" class="col-sm-3 col-form-label" style="color:#198754;font-weight:bold"><?php echo lng('Password') ?></label>
+                                <div class="col-sm-6">
+                                        <input class="form-control" type="password" id="js-password" name="js-password" value="<?php echo $user['password'] ?>" />
+                                    </div>
+                                    <div class="input-group-append col-sm-1">
+                                        <button id="show_password" class="btn btn-success" type="button" onclick="mostrarPassword()"> <span class="fa fa-eye-slash icon"></span> </button>
+                                    </div>
+                                </div>
+                            <?php } ?>
+                            <div class="mt-3 mb-3 row">
+                                <label for="js-administrador" class="col-sm-3 col-form-label" style="color:#198754;font-weight:bold"><?php echo lng('Administrator') ?></label>
+                                <div class="col-sm-9">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="js-administrador" name="js-administrador" value="true" <?php echo $user['administrador'] ? 'checked' : ''; ?> />
+                                    </div>
+                                </div> 
+                            </div>
+                            <div class="mt-3 mb-3 row ">
+                                <label for="js-iprincipal" class="col-sm-3 col-form-label" style="color:#198754;font-weight:bold"><?php echo lng('Principal') ?></label>
+                                <div class="col-sm-6">
+                                    <select class="form-select" id="js-iprincipal" name="js-iprincipal">
+                                        <?php
+                                        echo "<option value='null' " . ($user['principal'] == '' ? 'selected' : '') . " ></option>";
+                                        while ($inst = mysqli_fetch_array($res_inst,MYSQLI_ASSOC)) {
+                                            echo "<option value='". $inst['id_instrumento'] ."' " . ($user['principal'] == $inst['instrumento'] ? 'selected' : '') . " >". $inst['instrumento'] ."</option>";
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <label for="js-isecondary" class="col-sm-3 col-form-label" style="color:#198754;font-weight:bold"><?php echo lng('Secondary') ?></label>
+                                <div class="col-sm-6">
+                                    <select class="form-select" id="js-isecondary" name="js-isecondary">
+                                        <?php
+                                        echo "<option value='null' " . ($user['principal'] == '' ? 'selected' : '') . " ></option>";
+                                        $res_inst = mysqli_query($conn,$query_inst);
+                                        while ($inst = mysqli_fetch_array($res_inst,MYSQLI_ASSOC)) {
+                                            echo "<option value='". $inst['id_instrumento'] ."' " . ($user['secundario'] == $inst['instrumento'] ? 'selected' : '') . " >". $inst['instrumento'] ."</option>";
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mt-3 mb-3 row">
+                               <label for="js-fecalta" class="col-sm-3 col-form-label" style="color:#198754;font-weight:bold"><?php echo lng('FecAlta') ?></label>
+                               <div class="col-sm-6">
+                                    <input class="form-control" type="datetime" id="js-fecalta" name="js-fecalta" value="<?php echo $user['fecha_alta'] ?>" disabled>
+                                </div>
+                            </div>
+                            <div class="mt-3 mb-3 row">
+                                <label for="js-fecact" class="col-sm-3 col-form-label" style="color:#198754;font-weight:bold"><?php echo lng('FecAct') ?></label>
+                               <div class="col-sm-6">
+                                    <input class="form-control" disabled type="datetime" id="js-fecact" name="js-fecact" value="<?php echo $user['fecha_act'] ?>" disabled>
+                                </div>
+                            </div>                            
+                            <div class="mb-3 row">
+                                <div class="col-sm-10">
+                                    <button type="submit" class="btn btn-success"> <i class="fa fa-check-circle"></i> <?php echo lng('Save'); ?></button>
+                                </div>
+                            </div>
 
-                    <small class="text-body-secondary">* <?php echo lng('Sometimes the save action may not work on the first try, so please attempt it again') ?>.</small>
-                </form>
+                            <small class="text-body-secondary">* <?php echo lng('Sometimes the save action may not work on the first try, so please attempt it again') ?>.</small>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -2263,7 +2483,7 @@ $all_files_size = 0;
     <input type="hidden" name="group" value="1">
     <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>">
     <div class="table-responsive">
-        <table class="table table-bordered table-hover table-sm" id="main-table" data-bs-theme="<?php echo FM_THEME; ?>">
+        <table class="table table-bordered table-hover table-sm table-striped" id="main-table" data-bs-theme="<?php echo FM_THEME; ?>">
             <thead>
                 <tr>
                     <?php if (!FM_READONLY): ?>
@@ -3922,7 +4142,7 @@ function fm_show_nav_path($path)
                             <div class="dropdown-menu dropdown-menu-end text-small shadow" aria-labelledby="navbarDropdownMenuLink-5" data-bs-theme="<?php echo FM_THEME; ?>">
                                 <?php if (!FM_READONLY): ?>
                                     <a title="<?php echo lng('Settings') ?>" class="dropdown-item nav-link" href="?p=<?php echo urlencode(FM_PATH) ?>&amp;settings=1" ><i class="fa fa-cog" aria-hidden="true" style="color:#198754"></i> <?php echo lng('Settings') ?></a>
-                                    <a title="<?php echo lng('Users') ?>" class="dropdown-item nav-link" href="?p=<?php echo urlencode(FM_PATH) ?>&amp;users=1" ><i class="fa fa-user" aria-hidden="true" style="color:#198754"></i> <?php echo lng('Users') ?></a>
+                                    <a title="<?php echo lng('Users') ?>" class="dropdown-item nav-link" href="?p=<?php echo urlencode(FM_PATH) ?>&amp;users=0" ><i class="fa fa-user" aria-hidden="true" style="color:#198754"></i> <?php echo lng('Users') ?></a>
                                 <?php endif ?>
                                 <a title="<?php echo lng('Help') ?>" class="dropdown-item nav-link" href="?p=<?php echo urlencode(FM_PATH) ?>&amp;help=2"><i class="fa fa-exclamation-circle" aria-hidden="true" style="color:#198754"></i> <?php echo lng('Help') ?></a>
                                 <a title="<?php echo lng('Logout') ?>" class="dropdown-item nav-link" href="?logout=1"><i class="fa fa-sign-out" aria-hidden="true" style="color:#198754"></i> <?php echo lng('Logout') ?></a>
@@ -4239,13 +4459,17 @@ function fm_show_header_login()
                 color: #222222;
             }
 
+            .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+            background-color: #ecffe5ff;
+            }
+
             .table td {
                 vertical-align: middle !important;
             }
             .table th {
                 vertical-align: middle !important;
-                background-color: #cccccc;
-                color: #198754;
+                background-color: #198754;
+                color: #fff;
             }
 
             .table .custom-checkbox-td .custom-control.custom-checkbox,
@@ -5112,6 +5336,22 @@ function fm_show_header_login()
                     }
                 });
                 return false;
+            }
+
+            // Save Users
+            function save_user($this) {
+                let formData = $($this);
+                $.ajax({
+                    type: 'POST',
+                    url: 'save_user.php',
+                    data: formData.serialize(),
+                    async:false,
+                    success: function(data) {
+                        if (data) {
+                            $pwd.val(data);
+                        }
+                    },
+                });
             }
 
             //Create new password hash
