@@ -1,10 +1,7 @@
 <?php
 header('Content-Type: application/json');
 
-$servername = "localhost";
-$database = "sumalberic";
-$username = "root";
-$password = "";
+require('connectionBD.php');
 
 
 //Create connection

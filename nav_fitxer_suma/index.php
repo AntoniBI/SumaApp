@@ -1,11 +1,8 @@
 <?php
 //Default Configuration
-$CONFIG = '{"lang":"va","error_reporting":false,"show_hidden":false,"hide_Cols":false,"theme":"light"}';
+$CONFIG = '{"lang":"va","error_reporting":false,"show_hidden":false,"hide_Cols":true,"theme":"light"}';
 
-$servername = "localhost";
-$database = "sumalberic";
-$username = "root";
-$password = "";
+require('connectionBD.php');
 
 //Create connection
 $conn = mysqli_connect($servername,$username,$password,$database);
@@ -94,7 +91,7 @@ $default_timezone = 'Etc/UTC+1'; // UTC
 // Root path for file manager
 // use absolute path of directory i.e: '/var/www/folder' or $_SERVER['DOCUMENT_ROOT'].'/folder'
 //make sure update $root_url in next section
-$root_path = $_SERVER['DOCUMENT_ROOT'].'/navegador/files';
+$root_path = 'files';
 
 // Root url for links in file manager.Relative to $http_host. Variants: '', 'path/to/subfolder'
 // Will not working if $root_path will be outside of server document root
@@ -228,7 +225,7 @@ $report_errors = isset($cfg->data['error_reporting']) ? $cfg->data['error_report
 $hide_Cols = isset($cfg->data['hide_Cols']) ? $cfg->data['hide_Cols'] : true;
 
 // Theme
-$theme = isset($cfg->data['theme']) ? $cfg->data['theme'] : 'light';
+$theme = isset($cfg->data['theme']) ? $cfg->data['theme'] : 'dark';
 
 define('FM_THEME', $theme);
 
@@ -369,7 +366,7 @@ if ($use_auth) {
                 $_SESSION[FM_SESSION_ID]['logged'] = $_POST['fm_usr'];
                 fm_set_msg(lng('You are logged in'));
                 fm_redirect(FM_SELF_URL);
-            } else {
+            } else {               
                 unset($_SESSION[FM_SESSION_ID]['logged']);
                 fm_set_msg(lng('Login failed. Invalid username or password'), 'error');
                 fm_redirect(FM_SELF_URL);
@@ -377,12 +374,30 @@ if ($use_auth) {
         } else {
             fm_set_msg(lng('password_hash not supported, Upgrade PHP version'), 'error');;
         }
+    } elseif (isset($_POST['js-usuario'])) {
+        sleep(1);
+        unset($_SESSION[FM_SESSION_ID]['logged']);
+
+        $query_register = "INSERT INTO usuarios (usuario,nombre, apellidos, password, administrador,Id_instrumento_p,Id_instrumento_s)
+                           VALUES ('". $_POST['js-usuario'] ."','".$_POST['js-nombre']."','".$_POST['js-apellidos']."','".$_POST['js-password']."',false,".$_POST['js-iprincipal'].",".$_POST['js-isecondary'].")";
+        
+        if($result = mysqli_query($conn,$query_register)) {
+            fm_redirect(FM_SELF_URL .'?register=1');  
+            //fm_set_msg(lng($query_register));
+        } else {
+            //fm_set_msg(lng($query_register),'error');
+            fm_redirect(FM_SELF_URL .'?register=2');
+        }
+        
     } else {
         // Form
         unset($_SESSION[FM_SESSION_ID]['logged']);
         fm_show_header_login();
 
-        if(!isset($_GET['register'])) {
+        if(!isset($_GET['register']) || (isset($_GET['register']) && $_GET['register'] == 1)) {
+            if($_GET['register'] == 1) {
+                fm_set_msg(lng('User registered'));
+            } 
 ?>
         <section class="h-100">
             <div class="container h-100">
@@ -409,7 +424,7 @@ if ($use_auth) {
                                     <hr />
                                     <div class="mb-3">
                                         <label for="fm_usr" class="pb-2"><?php echo lng('Username'); ?></label>
-                                        <input type="text" class="form-control" id="fm_usr" name="fm_usr" required autofocus>
+                                        <input type="text" placeholder="example@sumaapp.es" class="form-control" id="fm_usr" name="fm_usr" required autofocus>
                                     </div>
 
                                     <div class="mb-3">
@@ -445,6 +460,9 @@ if ($use_auth) {
     <?php
 
         } else { 
+            if ($_GET['register'] == 2) {
+                fm_set_msg(lng('Register failed.  '. $query_register), 'error');
+            }
             
             $query_inst = "SELECT id_instrumento, instrumento from instrumentos";
             $res_inst = mysqli_query($conn,$query_inst);
@@ -468,7 +486,7 @@ if ($use_auth) {
                                     <hr />
                                     <div class="mb-3">
                                         <label for="js-usuario" class="pb-2"><?php echo lng('Username'); ?></label>
-                                        <input type="text" class="form-control" id="js-usuario" name="js-usuario" required autofocus>
+                                        <input type="text" placeholder="example@sumaapp.es" class="form-control" id="js-usuario" name="js-usuario" required autofocus>
                                     </div>
 
                                     <div class="mb-3">
@@ -537,7 +555,6 @@ if ($use_auth) {
                 </div>
             </div>
         </section>
-
         <?php }
 
         fm_show_footer_login();
@@ -2733,8 +2750,7 @@ function print_external($key)
     if (!array_key_exists($key, $external)) {
         // throw new Exception('Key missing in external: ' . key);
         echo "<!-- EXTERNAL: MISSING KEY $key -->";
-        return;
-    }
+        return;}
 
     echo "$external[$key]";
 }
