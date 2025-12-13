@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mi Web Musical</title>
+
+    <!-- Web Component de Gradio -->
+    <script
+        type="module"
+        src="https://gradio.s3-us-west-2.amazonaws.com/6.1.0/gradio.js"
+    ></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            background: #111;
+            color: white;
+        }
+
+        /* Panel musical (lado izquierdo) */
+        .music-section {
+            flex: 2;
+            padding: 30px;
+            background: linear-gradient(135deg, #1e1e1e, #000000);
+            overflow-y: auto;
+        }
+
+        h1 {
+            font-size: 2.6rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #aaa;
+            margin-bottom: 40px;
+        }
+
+        .album {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .album img {
+            width: 180px;
+            height: 180px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255,255,255,0.2);
+        }
+
+        .tracks {
+            margin-top: 20px;
+        }
+
+        .track {
+            padding: 10px 0;
+            border-bottom: 1px solid #333;
+            font-size: 1.1rem;
+        }
+
+        /* Panel del asistente (lado derecho) */
+        .assistant-panel {
+            flex: 1;
+            background: #f9f9f9;
+            border-left: 3px solid #222;
+            padding: 20px;
+            overflow-y: auto;
+            color: black;
+        }
+
+        .assistant-title {
+            text-align: center;
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        gradio-app {
+            width: 100%;
+            height: 85vh;
+        }
+
+        /* Responsive */
+        @media(max-width: 900px) {
+            body {
+                flex-direction: column;
+            }
+            .assistant-panel {
+                height: 60vh;
+            }
+            gradio-app {
+                height: 55vh;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sección musical (izquierda) -->
+    <div class="music-section">
+        <h1>🎵 Mi Web Musical</h1>
+        <p class="subtitle">Explora canciones, playlists y descubre nueva música.</p>
+
+        <div class="album">
+            <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=600" />
+            <div>
+                <h2>Álbum Destacado</h2>
+                <p>Disfruta de una selección especial de música.</p>
+            </div>
+        </div>
+
+        <h3>Lista de Canciones</h3>
+        <div class="tracks">
+            <div class="track">01. Sunrise - (3:42)</div>
+            <div class="track">02. Echoes of You - (4:10)</div>
+            <div class="track">03. Midnight Drive - (2:58)</div>
+            <div class="track">04. Far Away - (3:21)</div>
+            <div class="track">05. Into the Light - (4:32)</div>
+        </div>
+    </div>
+
+    <!-- Panel del asistente (derecha) -->
+    <div class="assistant-panel">
+        <div class="assistant-title">🤖 Asistente Musical</div>
+
+        <gradio-app src="https://antoni341-asistente-suma.hf.space"></gradio-app>
+    </div>
+
+</body>
+</html>
